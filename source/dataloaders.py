@@ -12,7 +12,8 @@ from PIL import Image
 import numpy as np
 
 # 为适应openbays路径改动
-img_path = os.path.join(self.path_to_images, file_name)
+# img_path = os.path.join(self.path_to_images, file_name)
+from config import DATASET_PATH
 
 
 # 加载合成数据集的类，继承自PyTorch的Dataset
@@ -139,7 +140,7 @@ class LoadSyntheticDataset(Dataset):
             file_name = os.path.basename(label['file_path']) + '.png'
 
             # 为适应openbays路径改动
-            img_path = os.path.join(self.path_to_images, file_name)
+            # img_path = os.path.join(self.path_to_images, file_name)
             # 为适应openbays路径改动
             img_path = os.path.join(DATASET_PATH, file_name)
 
