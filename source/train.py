@@ -11,6 +11,8 @@ import torch.optim as optim
 import torch.nn.functional as F
 import numpy as np
 
+# 为适应openbays路径改动
+from config import DATASET_PATH, TRANSFORMS_PATH
 
 class TrainModel: 
     def __init__(self):
@@ -39,8 +41,14 @@ class TrainModel:
         # 当前场景（chair）的数据根： .../NeRF-from-scratch/nerf_synthetic/chair
         base_path = os.path.join(project_root, 'nerf_synthetic', 'chair')  # ...\NeRF-from-scratch\nerf_synthetic\chair
         # 训练图片目录与变换文件（相机姿态 JSON）
-        data_path = os.path.join(base_path, 'train')  # ...\chair\train
-        transforms_path = os.path.join(base_path, 'transforms_train.json')  # ...\chair\transforms_train.json
+
+        # 为适应openbays路径改动
+        # data_path = os.path.join(base_path, 'train')  # ...\chair\train
+        # transforms_path = os.path.join(base_path, 'transforms_train.json')  # ...\chair\transforms_train.json
+
+        # 为适应openbays路径改动
+        data_path = DATASET_PATH
+        transforms_path = TRANSFORMS_PATH
 
         # 创建自定义 DataLoader：
         # - 读取 train/ 下的 PNG

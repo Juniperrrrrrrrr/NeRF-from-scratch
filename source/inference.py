@@ -10,6 +10,9 @@ from model import NeRFModel
 from renderer import save_rendered_image  # 导入图像保存函数
 import torch.nn.functional as F
 
+# 为适应openbays路径改动
+from config import CHECKPOINT_PATH
+
 # ========== 1. 读 checkpoint 加载训练好的模型==========
 def load_checkpoint(model, checkpoint_path):
     """Load the latest checkpoint."""  """加载训练好的模型检查点"""
@@ -312,7 +315,10 @@ def main():
     # 加载训练好的模型检查点（权重）
     # checkpoint_path: 保存的模型参数文件路径
     # **************************注意：这是 Linux 风格的硬编码路径，Windows 下通常不存在***********************
-    checkpoint_path = '/teamspace/studios/this_studio/checkpoint_epoch_200.pth'
+    # 为适应openbays路径改动
+    # checkpoint_path = '/teamspace/studios/this_studio/checkpoint_epoch_200.pth'
+    # 为适应openbays路径改动
+    checkpoint_path = CHECKPOINT_PATH
     # 从 .pth 加载权重到 model。若文件不存在会抛 FileNotFoundError
     model = load_checkpoint(model, checkpoint_path)
     

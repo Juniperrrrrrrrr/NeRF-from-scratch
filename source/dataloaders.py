@@ -11,6 +11,10 @@ from torch.utils.data import Dataset, DataLoader
 from PIL import Image
 import numpy as np
 
+# 为适应openbays路径改动
+img_path = os.path.join(self.path_to_images, file_name)
+
+
 # 加载合成数据集的类，继承自PyTorch的Dataset
 class LoadSyntheticDataset(Dataset):
     def __init__(self, path_to_images, path_to_labels):
@@ -133,7 +137,11 @@ class LoadSyntheticDataset(Dataset):
             label = self.labels['frames'][idx]
             # 构建图像文件路径（从标签中获取文件名并添加.png后缀）
             file_name = os.path.basename(label['file_path']) + '.png'
+
+            # 为适应openbays路径改动
             img_path = os.path.join(self.path_to_images, file_name)
+            # 为适应openbays路径改动
+            img_path = os.path.join(DATASET_PATH, file_name)
 
             # 检查图像文件是否存在
             if not os.path.exists(img_path):
