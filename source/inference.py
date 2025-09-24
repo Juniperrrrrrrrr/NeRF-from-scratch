@@ -11,7 +11,7 @@ from renderer import save_rendered_image  # 导入图像保存函数
 import torch.nn.functional as F
 
 # 为适应openbays路径改动
-from config import CHECKPOINT_PATH
+from config import CHECKPOINT_PATH, TRANSFORMS_TEST_PATH, RENDER_DIR
 
 # ========== 1. 读 checkpoint 加载训练好的模型==========
 def load_checkpoint(model, checkpoint_path):
@@ -320,26 +320,30 @@ def main():
     # 为适应openbays路径改动
     checkpoint_path = CHECKPOINT_PATH
     # 从 .pth 加载权重到 model。若文件不存在会抛 FileNotFoundError
-    model = load_checkpoint(model, checkpoint_path)
+    model = load_checkpoint(model, CHECKPOINT_PATH)
     
     # Create output directory
     # 创建输出目录
-    render_dir = 'rendered_views'
+    # render_dir = 'rendered_views'
     # exist_ok=True: 如果目录已存在则不报错
-    os.makedirs(render_dir, exist_ok=True)
+    os.makedirs(RENDER_DIR, exist_ok=True)
     
     # Load test transforms
     # 加载测试集的相机位姿（变换矩阵）
     # 计算工作空间根目录的路径
     # workspace_root: 通过向上三级目录得到“项目根”
-    workspace_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    # 构建测试集变换文件的完整路径
-    # 假定数据布局为 <root>/nerf_synthetic/chair/transforms_test.json
-    transforms_path = os.path.join(workspace_root, 'nerf_synthetic', 'chair', 'transforms_test.json')
+
+
+    # workspace_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    # # 构建测试集变换文件的完整路径
+    # # 假定数据布局为 <root>/nerf_synthetic/chair/transforms_test.json
+    # transforms_path = os.path.join(workspace_root, 'nerf_synthetic', 'chair', 'transforms_test.json')
+
+
     # 加载测试帧和相机角度
     # frames: list，长度=N，每项含 'transform_matrix' [4,4]
     # camera_angle_x: float（弧度），水平视场角 θx
-    frames, camera_angle_x = load_test_poses(transforms_path)
+    frames, camera_angle_x = load_test_poses(TRANSFORMS_TEST_PATH)
     
     # Calculate focal length from camera angle
     # 根据相机角度计算焦距
@@ -366,14 +370,14 @@ def main():
         # 将渲染结果从GPU移动到CPU，便于保存
         rgb_map = rgb_map.cpu()
         # 设置输出文件路径
-        output_path = os.path.join(render_dir, f'view_{idx:03d}.png')
+        output_path = os.path.join(RENDER_DIR, f'view_{idx:03d}.png')
         # 保存渲染的图像
         # 这里传入 width=rgb_map.shape[1]==W，高度=rgb_map.shape[0]==H，路径=output_path
         save_rendered_image(rgb_map, rgb_map.shape[1], rgb_map.shape[0], output_path)
     
     print("Creating GIF from rendered views...")
     # 把 render_dir 下的 .png 合成 GIF，帧间隔 0.1s
-    create_gif(render_dir, 'nerf_test_views.gif', duration=0.1)
+    create_gif(RENDER_DIR, 'nerf_test_views.gif', duration=0.1)
     print("Done! Check nerf_test_views.gif for the final animation.")
 
 if __name__ == '__main__':
